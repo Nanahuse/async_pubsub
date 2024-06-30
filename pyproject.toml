@@ -1,0 +1,19 @@
+[project]
+name = "async_pubsub"
+version = "0.1"
+description = "async pubsub"
+requires-python = ">=3.10"
+dependencies = []
+license = { file = "LICENSE" }
+authors = [{ name = "Nanahuse" }]
+classifiers = ["License :: OSI Approved :: MIT License"]
+readme = "README.md"
+
+[project.urls]
+Homepage = "https://github.com/Nanahuse/async_pubsub"
+
+[project.optional-dependencies]
+dev = ["pytest", "flake8", "black", "isort", "mypy"]
+
+[tool.black]
+line-length = 120
