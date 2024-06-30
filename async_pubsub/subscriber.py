@@ -18,6 +18,9 @@ class Subscriber(Generic[T]):
     def __del__(self):
         self.__hub.delete_subscriber(self)
 
+    def is_match(self, key: Key):
+        return self.__key.match(key)
+
     async def subscribe(self, key: Key, value: T):
-        if self.__key.match(key):
+        if self.is_match(key):
             await self.__callback(value)

@@ -77,3 +77,17 @@ async def test_pub():
 
     for cmp, count in zip(comps, (1, 1, 0)):
         assert cmp.check_count(count)
+
+
+def test_count():
+    hub = Hub()
+    assert hub.count_subscribers(Key("")) == 0
+
+    keys = [Key(str(i)) for i in range(3)]
+    comps = [Comparator(str(i)) for i in range(3)]
+
+    subs = [Subscriber[str](hub, key, cmp.receive) for key, cmp in zip(keys, comps)]
+    pub = Publisher[str](hub, keys[0])
+
+    assert hub.count_subscribers(Key("1")) == 1
+    assert pub.count_subscribers() == 1

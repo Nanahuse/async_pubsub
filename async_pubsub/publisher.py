@@ -16,3 +16,6 @@ class Publisher(Generic[T]):
 
     async def publish(self, value: T):
         await self.__hub.publish(self.__key, value)
+
+    def count_subscribers(self):
+        return self.__hub.count_subscribers(self.__key)

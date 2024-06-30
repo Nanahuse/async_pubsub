@@ -17,3 +17,6 @@ class Hub(object):
 
     def delete_subscriber(self, subscriber: Subscriber):
         self.__subscribers.discard(subscriber)
+
+    def count_subscribers(self, key: Key):
+        return sum(1 for sub in self.__subscribers if sub.is_match(key))
