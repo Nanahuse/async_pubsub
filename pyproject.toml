@@ -13,7 +13,7 @@ readme = "README.md"
 Homepage = "https://github.com/Nanahuse/async_pubsub"
 
 [project.optional-dependencies]
-dev = ["pytest", "flake8", "black", "isort", "mypy"]
+dev = ["pytest", "flake8", "black", "isort", "mypy", "pytest-asyncio"]
 
 [tool.black]
 line-length = 120
