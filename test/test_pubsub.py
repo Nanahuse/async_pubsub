@@ -1,6 +1,6 @@
 import pytest
 
-from async_pubsub import Key, Topic, Publisher, Subscriber
+from async_pubsub import Hub, Key, Topic, Publisher, Subscriber
 from async_pubsub.controller import Controller
 
 
@@ -14,10 +14,10 @@ class Comparator:
         self.received = value
         self.counter += 1
 
-    def check_value(self):
+    def check_value(self) -> bool:
         return self.value == self.received
 
-    def check_count(self, count: int):
+    def check_count(self, count: int) -> bool:
         return count == self.counter
 
 
@@ -27,6 +27,26 @@ def test_key():
     assert key.match(Key(("one", "two", "three")))
     assert not key.match(Key(("one", "two", "none")))
     assert not key.match(Key(("one", "two")))
+
+
+@pytest.mark.asyncio
+async def test_hub():
+    hub = Hub()
+
+    topic = Topic(str, Key("key"))
+
+    comp = Comparator("test")
+
+    sub = hub.create_subscriber(topic, comp.receive)
+    pub = hub.create_publisher(topic)
+
+    await pub.publish("test")
+
+    assert comp.check_value()
+
+    await pub.publish("ng")
+
+    assert not comp.check_value()
 
 
 @pytest.mark.asyncio
