@@ -5,21 +5,21 @@ from .key import Key
 from .topic import Topic
 
 if TYPE_CHECKING:
-    from .hub import Hub
+    from .controller import Controller
 
 
 T = TypeVar("T")
 
 
 class Subscriber(Generic[T]):
-    def __init__(self, hub: Hub, topic: Topic[T], callback: Callable[[T], Awaitable[None]]):
-        hub.add_subscriber(self)
-        self.__hub = hub
+    def __init__(self, controller: Controller, topic: Topic[T], callback: Callable[[T], Awaitable[None]]):
+        controller.add_subscriber(self)
+        self.__controller = controller
         self.__topic = topic
         self.__callback = callback
 
     def __del__(self):
-        self.__hub.delete_subscriber(self)
+        self.__controller.delete_subscriber(self)
 
     def is_match(self, key: Key):
         return self.__topic.key.match(key)

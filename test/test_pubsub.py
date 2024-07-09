@@ -1,6 +1,7 @@
 import pytest
 
-from async_pubsub import Key, Topic, Hub, Publisher, Subscriber
+from async_pubsub import Key, Topic, Publisher, Subscriber
+from async_pubsub.controller import Controller
 
 
 class Comparator:
@@ -32,32 +33,32 @@ def test_key():
 async def test_sub():
     comps = [Comparator(str(i)) for i in range(2)]
 
-    hub = Hub()
+    controller = Controller()
     topic = Topic(str, Key("key"))
-    subs = [Subscriber(hub, topic, cmp.receive) for cmp in comps]
+    subs = [Subscriber(controller, topic, cmp.receive) for cmp in comps]
 
     for sub, cmp, expected in zip(subs, comps, (True, False)):
         await sub.subscribe(topic.key, "0")
         assert cmp.check_value() == expected and cmp.check_count(1)
 
-    await hub.publish(topic.key, "1")
+    await controller.publish(topic.key, "1")
 
     for _, cmp, expected in zip(subs, comps, (False, True)):
         assert cmp.check_value() == expected and cmp.check_count(2)
 
-    await hub.publish(topic.key, "none")
+    await controller.publish(topic.key, "none")
     for _, cmp, expected in zip(subs, comps, (False, False)):
         assert cmp.check_value() == expected and cmp.check_count(3)
 
 
 @pytest.mark.asyncio
 async def test_pub():
-    hub = Hub()
+    controller = Controller()
     comps = [Comparator(str(i)) for i in range(3)]
     topics = [Topic(str, Key(str(i))) for i in range(3)]
 
-    subs = [Subscriber(hub, topic, cmp.receive) for topic, cmp in zip(topics, comps)]
-    pubs = [Publisher(hub, topic) for topic in topics]
+    subs = [Subscriber(controller, topic, cmp.receive) for topic, cmp in zip(topics, comps)]
+    pubs = [Publisher(controller, topic) for topic in topics]
 
     await pubs[0].publish("0")
     assert comps[0].check_value()
@@ -79,14 +80,14 @@ async def test_pub():
 
 
 def test_count():
-    hub = Hub()
-    assert hub.count_subscribers(Key("")) == 0
+    controller = Controller()
+    assert controller.count_subscribers(Key("")) == 0
 
-    keys = [Key(str(i)) for i in range(3)]
+    topics = [Topic(str, Key(str(i))) for i in range(3)]
     comps = [Comparator(str(i)) for i in range(3)]
 
-    subs = [Subscriber[str](hub, key, cmp.receive) for key, cmp in zip(keys, comps)]
-    pub = Publisher[str](hub, keys[0])
+    subs = [Subscriber(controller, topic, cmp.receive) for topic, cmp in zip(topics, comps)]
+    pub = Publisher(controller, topics[0])
 
-    assert hub.count_subscribers(Key("1")) == 1
+    assert controller.count_subscribers(Key("1")) == 1
     assert pub.count_subscribers() == 1

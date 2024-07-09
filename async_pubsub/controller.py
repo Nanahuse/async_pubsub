@@ -4,7 +4,7 @@ from .key import Key
 from .subscriber import Subscriber
 
 
-class Hub(object):
+class Controller(object):
     def __init__(self):
         self.__subscribers = set[Subscriber]()
 
