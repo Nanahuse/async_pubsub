@@ -37,7 +37,7 @@ async def test_hub():
 
     comp = Comparator("test")
 
-    sub = hub.create_subscriber(topic, comp.receive)
+    sub = hub.create_subscriber(topic, comp.receive)  # noqa:F841
     pub = hub.create_publisher(topic)
 
     await pub.publish("test")
@@ -106,7 +106,7 @@ def test_count():
     topics = [Topic(str, Key(str(i))) for i in range(3)]
     comps = [Comparator(str(i)) for i in range(3)]
 
-    subs = [Subscriber(controller, topic, cmp.receive) for topic, cmp in zip(topics, comps)]
+    subs = [Subscriber(controller, topic, cmp.receive) for topic, cmp in zip(topics, comps)]  # noqa:F841
     pub = Publisher(controller, topics[0])
 
     assert controller.count_subscribers(Key("1")) == 1
