@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import logging
+
 from .key import Key
 from .subscriber import Subscriber
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 
 
 class Controller(object):
@@ -9,6 +14,7 @@ class Controller(object):
         self.__subscribers = set[Subscriber]()
 
     async def publish(self, key: Key, value):
+        logger.debug(f"publish: {key}")
         for sub in self.__subscribers:
             await sub.subscribe(key, value)
 
