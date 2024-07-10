@@ -25,5 +25,5 @@ class Subscriber(Generic[T]):
         return self.__topic.key.match(key)
 
     async def subscribe(self, key: Key, value: T):
-        if self.__topic.key.match(key):
+        if self.is_match(key):
             await self.__callback(value)
