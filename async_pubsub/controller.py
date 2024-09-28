@@ -1,28 +1,31 @@
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING, Any
 
-from .key import Key
 from .subscriber import Subscriber
 
+if TYPE_CHECKING:
+    from .key import Key
+    from .topic import Topic
+
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 
-class Controller(object):
-    def __init__(self):
-        self.__subscribers = set[Subscriber]()
+class Controller:
+    def __init__(self) -> None:
+        self._subscribers = set[Subscriber]()
 
-    async def publish(self, key: Key, value):
-        logger.debug(f"publish: {key}")
-        for sub in self.__subscribers:
+    async def publish(self, key: Key, value: Any) -> None:  # noqa: ANN401
+        logger.debug("publish: %s", key)
+        for sub in self._subscribers:
             await sub.subscribe(key, value)
 
-    def add_subscriber(self, subscriber: Subscriber):
-        self.__subscribers.add(subscriber)
+    def add_subscriber(self, subscriber: Subscriber) -> None:
+        self._subscribers.add(subscriber)
 
-    def delete_subscriber(self, subscriber: Subscriber):
-        self.__subscribers.discard(subscriber)
+    def delete_subscriber(self, subscriber: Subscriber) -> None:
+        self._subscribers.discard(subscriber)
 
-    def count_subscribers(self, key: Key):
-        return sum(1 for sub in self.__subscribers if sub.is_match(key))
+    def count_subscribers(self, topic: Topic) -> int:
+        return sum(1 for sub in self._subscribers if sub.is_match(topic.key))
