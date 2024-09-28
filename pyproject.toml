@@ -2,7 +2,7 @@
 name = "async_pubsub"
 version = "0.1"
 description = "async pubsub"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = []
 license = { file = "LICENSE" }
 authors = [{ name = "Nanahuse" }]
@@ -12,8 +12,9 @@ readme = "README.md"
 [project.urls]
 Homepage = "https://github.com/Nanahuse/async_pubsub"
 
-[project.optional-dependencies]
-dev = ["pytest", "flake8", "black", "isort", "mypy", "pytest-asyncio"]
+
+[tool.uv]
+dev-dependencies = ["pytest>=8.3.3", "pytest-asyncio>=0.24.0"]
 
 [tool.black]
 line-length = 120
